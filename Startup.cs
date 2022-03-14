@@ -30,8 +30,9 @@ namespace BoaSaudeAutenticacao
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllers();
+            services.AddCors();
 
-              services.AddIdentityEntityFrameworkContextConfiguration(options =>
+            services.AddIdentityEntityFrameworkContextConfiguration(options =>
                 options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection"),
                     b => b.MigrationsAssembly("BoaSaudeAutenticacao")));
 
@@ -76,7 +77,13 @@ namespace BoaSaudeAutenticacao
 
             app.UseAuthConfiguration();
 
-            app.UseEndpoints(endpoints =>
+            app.UseCors(x => x
+                  .AllowAnyMethod()
+                  .AllowAnyHeader()
+                  .SetIsOriginAllowed(origin => true));
+
+
+          app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();
             });
